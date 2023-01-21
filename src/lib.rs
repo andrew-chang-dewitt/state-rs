@@ -1,29 +1,42 @@
-pub struct Machine {
-    current: String,
-}
+//! A super, ridiculously over-simplified implementation of a state machine using one trait.
+//!
+//! # Basic Example
+//!
+//! ```
+//! use state_rs::Receive;
+//!
+//! // first define your States
+//! struct On;
+//! struct Off;
+//! // and your Actions
+//! struct Toggle;
+//!
+//! // then implement receive for the state transitions
+//! impl From<Off> for On {
+//!     fn from(_: Off) -> Self {
+//!         On
+//!     }
+//! }
+//! impl From<On> for Off {
+//!     fn from(_: On) -> Self {
+//!         Off
+//!     }
+//! }
+//! impl Receive<Toggle> for On {
+//!     type NewState = Off;
+//! }
+//! impl Receive<Toggle> for Off {
+//!     type NewState = On;
+//! }
+//!
+//! // finally, wrap it all up in a new Struct
+//! // struct Switch<On, Off>;
+//! // implement Machine for it
+//! // impl Machine for Switch<On, Off> {
+//! // }
+//! // impl Dispatch<Toggle> for Switch<On, Off> {}
+//! ```
+mod state;
 
-impl Machine {
-    pub fn new(start: &str) -> Self {
-        Machine {
-            current: String::from(start),
-        }
-    }
-
-    pub fn current_state(&self) -> &str {
-        &self.current
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn a_machine_has_a_starting_state() {
-        let starting_state = "starting";
-        let machine = Machine::new(starting_state);
-        let current_state = machine.current_state();
-
-        assert_eq!(current_state, starting_state);
-    }
-}
+// Re-export state traits
+pub use state::Receive;
